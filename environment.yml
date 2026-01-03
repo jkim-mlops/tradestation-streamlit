@@ -7,6 +7,7 @@ dependencies:
   - python >=3.13,<3.14
 
   # required
+  - plotly >=6,<7
   - statsmodels >=0.14,<1
   - streamlit >=1.52,<2
   - tradestation-python >=0.1.3,<1
