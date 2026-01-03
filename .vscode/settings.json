@@ -1,0 +1,6 @@
+{
+    "conventionalCommits.scopes": [
+        "tradestation-streamlit",
+        "environment.yml"
+    ]
+}
