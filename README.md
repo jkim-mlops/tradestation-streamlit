@@ -1,3 +1,9 @@
+<!-- Local preview: Embedded looping video (may not work on GitHub) -->
+<video src="assets/demo.mov" autoplay loop controls width="600"></video>
+
+<!-- GitHub: Download or view the video -->
+[Watch demo video](assets/demo.mov)
+
 # tradestation-streamlit
 Streamlit app backed by TradeStation used to visualize stock charts.
 
