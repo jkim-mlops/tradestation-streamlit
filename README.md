@@ -17,4 +17,4 @@ Streamlit app backed by TradeStation used to visualize stock charts.
     streamlit run main.py
     ```
 
-https://github.com/user-attachments/assets/4c7303e6-89f9-4db5-adc8-765ea04b259e
+https://github.com/user-attachments/assets/56a998a1-39c3-4a55-afca-f1558fe7c5c4
