@@ -36,8 +36,8 @@ def trade_label(i: int, row) -> str:
 
 
 def compute_bounds(row, resolution: str) -> tuple:
-    entry = Timestamp(row["entry_time"]).to_pydatetime()
-    exit_ = Timestamp(row["exit_time"]).to_pydatetime()
+    entry = Timestamp(row["entry_time"]).tz_localize("UTC").tz_convert("US/Eastern").tz_localize(None).to_pydatetime()
+    exit_ = Timestamp(row["exit_time"]).tz_localize("UTC").tz_convert("US/Eastern").tz_localize(None).to_pydatetime()
     before, after = BOUNDS[resolution]
 
     if resolution == "Minute":
@@ -62,9 +62,7 @@ if __name__ == "__main__":
             st.stop()
 
         file_labels = [f.stem for f in trade_files]
-        selected_idx = st.selectbox(
-            "Backtest", range(len(file_labels)), format_func=lambda i: file_labels[i]
-        )
+        selected_idx = st.selectbox("Backtest", range(len(file_labels)), format_func=lambda i: file_labels[i])
         trades_df = parse_trades_csv(trade_files[selected_idx])
 
         if trades_df.empty:
@@ -73,9 +71,7 @@ if __name__ == "__main__":
 
         # Trade selection
         labels = [trade_label(i, row) for i, row in trades_df.iterrows()]
-        trade_idx = st.selectbox(
-            "Trade", range(len(labels)), format_func=lambda i: labels[i]
-        )
+        trade_idx = st.selectbox("Trade", range(len(labels)), format_func=lambda i: labels[i])
         trade = trades_df.iloc[trade_idx]
 
         # Resolution
@@ -103,8 +99,12 @@ if __name__ == "__main__":
     fconfig = {"volume": "rgba(132, 170, 183, 0.4)"}
     fig = convert_df_to_fig(df, fconfig)
 
-    entry_time = Timestamp(trade["entry_time"]).to_pydatetime()
-    exit_time = Timestamp(trade["exit_time"]).to_pydatetime()
+    entry_time = (
+        Timestamp(trade["entry_time"]).tz_localize("UTC").tz_convert("US/Eastern").tz_localize(None).to_pydatetime()
+    )
+    exit_time = (
+        Timestamp(trade["exit_time"]).tz_localize("UTC").tz_convert("US/Eastern").tz_localize(None).to_pydatetime()
+    )
     fig = add_trade_markers_to_fig(fig, entry_time, exit_time)
 
     win = "WIN" if trade["is_win"] else "LOSS"
@@ -113,7 +113,7 @@ if __name__ == "__main__":
     )
 
     pconfig = configure_plotly()
-    st.plotly_chart(fig, use_container_width=True, config=pconfig)
+    st.plotly_chart(fig, width="stretch", config=pconfig)
 
     # Trade details
     with st.expander("Trade Details"):
