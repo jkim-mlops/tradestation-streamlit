@@ -465,7 +465,9 @@ def monte_carlo_simulation(
 def scan_trade_files(directory: str = "~/Downloads") -> list[Path]:
     """Scan directory for QC backtest trade CSV files."""
     path = Path(directory).expanduser()
-    return sorted(path.glob("*_trades.csv"), key=lambda p: p.stat().st_mtime, reverse=True)
+    return sorted(
+        path.glob("*_trades.csv"), key=lambda p: p.stat().st_mtime, reverse=True
+    )
 
 
 def parse_trades_csv(filepath: Path) -> DataFrame:

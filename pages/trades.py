@@ -1,8 +1,7 @@
 from datetime import timedelta
-from pathlib import Path
 
 import streamlit as st
-from pandas import DataFrame, Timestamp
+from pandas import Timestamp
 from tradestation_python import TradeStation
 from tradestation_python.types.enums import Unit
 
@@ -63,7 +62,9 @@ if __name__ == "__main__":
             st.stop()
 
         file_labels = [f.stem for f in trade_files]
-        selected_idx = st.selectbox("Backtest", range(len(file_labels)), format_func=lambda i: file_labels[i])
+        selected_idx = st.selectbox(
+            "Backtest", range(len(file_labels)), format_func=lambda i: file_labels[i]
+        )
         trades_df = parse_trades_csv(trade_files[selected_idx])
 
         if trades_df.empty:
@@ -72,7 +73,9 @@ if __name__ == "__main__":
 
         # Trade selection
         labels = [trade_label(i, row) for i, row in trades_df.iterrows()]
-        trade_idx = st.selectbox("Trade", range(len(labels)), format_func=lambda i: labels[i])
+        trade_idx = st.selectbox(
+            "Trade", range(len(labels)), format_func=lambda i: labels[i]
+        )
         trade = trades_df.iloc[trade_idx]
 
         # Resolution
