@@ -36,8 +36,8 @@ def trade_label(i: int, row) -> str:
 
 
 def compute_bounds(row, resolution: str) -> tuple:
-    entry = Timestamp(row["entry_time"]).tz_localize("UTC").tz_convert("US/Eastern").tz_localize(None).to_pydatetime()
-    exit_ = Timestamp(row["exit_time"]).tz_localize("UTC").tz_convert("US/Eastern").tz_localize(None).to_pydatetime()
+    entry = Timestamp(row["entry_time"]).tz_convert("US/Eastern").tz_localize(None).to_pydatetime()
+    exit_ = Timestamp(row["exit_time"]).tz_convert("US/Eastern").tz_localize(None).to_pydatetime()
     before, after = BOUNDS[resolution]
 
     if resolution == "Minute":
@@ -100,10 +100,10 @@ if __name__ == "__main__":
     fig = convert_df_to_fig(df, fconfig)
 
     entry_time = (
-        Timestamp(trade["entry_time"]).tz_localize("UTC").tz_convert("US/Eastern").tz_localize(None).to_pydatetime()
+        Timestamp(trade["entry_time"]).tz_convert("US/Eastern").tz_localize(None).to_pydatetime()
     )
     exit_time = (
-        Timestamp(trade["exit_time"]).tz_localize("UTC").tz_convert("US/Eastern").tz_localize(None).to_pydatetime()
+        Timestamp(trade["exit_time"]).tz_convert("US/Eastern").tz_localize(None).to_pydatetime()
     )
     fig = add_trade_markers_to_fig(fig, entry_time, exit_time)
 
