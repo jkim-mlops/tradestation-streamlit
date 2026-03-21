@@ -219,13 +219,22 @@ def add_trade_markers_to_fig(
         (entry_time, entry_color, "Entry"),
         (exit_time, exit_color, "Exit"),
     ]:
-        fig.add_vline(
+        fig.add_shape(
+            type="line",
+            x0=dt,
+            x1=dt,
+            y0=0,
+            y1=1,
+            yref="paper",
+            line=dict(dash="dot", color=color, width=2),
+        )
+        fig.add_annotation(
             x=dt,
-            line_dash="dot",
-            line_color=color,
-            annotation_text=label,
-            annotation_position="top",
-            annotation_font_color=color,
-            secondary_y=True,
+            y=1,
+            yref="paper",
+            text=label,
+            showarrow=False,
+            yshift=10,
+            font=dict(color=color),
         )
     return fig
