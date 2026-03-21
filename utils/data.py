@@ -1,5 +1,6 @@
 from collections import Counter, defaultdict
 from enum import Enum
+from pathlib import Path
 from pandas import DataFrame, Series, Timestamp
 from typing import Dict, Iterable, List, Tuple
 from plotly.graph_objects import Bar, Figure, Candlestick
@@ -459,3 +460,39 @@ def monte_carlo_simulation(
         probabilities_over_time.append(step_probs)
 
     return probabilities_over_time
+
+
+def scan_trade_files(directory: str = "~/Downloads") -> list[Path]:
+    """Scan directory for QC backtest trade CSV files."""
+    path = Path(directory).expanduser()
+    return sorted(path.glob("*_trades.csv"), key=lambda p: p.stat().st_mtime, reverse=True)
+
+
+def parse_trades_csv(filepath: Path) -> DataFrame:
+    """Parse a QC backtest trades CSV into a DataFrame of spreads.
+
+    Groups individual legs by (entry_time, underlying) and aggregates
+    P&L, fees, win status, and leg details.
+    """
+    import pandas as pd
+
+    bt_raw = pd.read_csv(filepath)
+    bt_raw["underlying"] = bt_raw["Symbols"].str.strip().str.split().str[0]
+    bt_raw["entry_dt"] = pd.to_datetime(bt_raw["Entry Time"])
+    bt_raw["exit_dt"] = pd.to_datetime(bt_raw["Exit Time"])
+
+    return (
+        bt_raw.groupby(["entry_dt", "underlying"])
+        .agg(
+            exit_time=("exit_dt", "max"),
+            total_pnl=("P&L", "sum"),
+            total_fees=("Fees", "sum"),
+            is_win=("IsWin", "max"),
+            legs=("Symbols", list),
+            direction=("Direction", list),
+        )
+        .reset_index()
+        .rename(columns={"entry_dt": "entry_time"})
+        .sort_values("entry_time")
+        .reset_index(drop=True)
+    )
