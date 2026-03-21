@@ -205,3 +205,27 @@ def add_consolidation_ranges_to_fig(
         )
 
     return fig
+
+
+def add_trade_markers_to_fig(
+    fig: Figure,
+    entry_time: datetime,
+    exit_time: datetime,
+    entry_color: str = "rgba(0, 150, 255, 0.8)",
+    exit_color: str = "rgba(255, 80, 80, 0.8)",
+) -> Figure:
+    """Add vertical entry/exit markers to a candlestick chart."""
+    for dt, color, label in [
+        (entry_time, entry_color, "Entry"),
+        (exit_time, exit_color, "Exit"),
+    ]:
+        fig.add_vline(
+            x=dt,
+            line_dash="dot",
+            line_color=color,
+            annotation_text=label,
+            annotation_position="top",
+            annotation_font_color=color,
+            secondary_y=True,
+        )
+    return fig
