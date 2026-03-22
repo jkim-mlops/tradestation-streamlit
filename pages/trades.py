@@ -36,17 +36,31 @@ def trade_label(i: int, row) -> str:
 
 
 def compute_bounds(row, resolution: str) -> tuple:
-    entry = Timestamp(row["entry_time"]).tz_convert("US/Eastern").tz_localize(None).to_pydatetime()
-    exit_ = Timestamp(row["exit_time"]).tz_convert("US/Eastern").tz_localize(None).to_pydatetime()
+    """Compute date bounds in UTC for the TradeStation API."""
+    import pytz
+
+    eastern = pytz.timezone("US/Eastern")
+    entry_et = Timestamp(row["entry_time"]).tz_convert("US/Eastern")
+    exit_et = Timestamp(row["exit_time"]).tz_convert("US/Eastern")
     before, after = BOUNDS[resolution]
 
     if resolution == "Minute":
-        # Entry day open to exit day close
-        firstdate = entry.replace(hour=9, minute=30, second=0)
-        lastdate = exit_.replace(hour=16, minute=0, second=0)
+        # Build ET market hours, convert back to UTC for the API
+        firstdate = (
+            entry_et.replace(hour=9, minute=30, second=0)
+            .tz_convert("UTC")
+            .tz_localize(None)
+            .to_pydatetime()
+        )
+        lastdate = (
+            exit_et.replace(hour=16, minute=0, second=0)
+            .tz_convert("UTC")
+            .tz_localize(None)
+            .to_pydatetime()
+        )
     else:
-        firstdate = entry - before
-        lastdate = exit_ + after
+        firstdate = entry_et.tz_localize(None).to_pydatetime() - before
+        lastdate = exit_et.tz_localize(None).to_pydatetime() + after
 
     return firstdate, lastdate
 
