@@ -76,7 +76,9 @@ if __name__ == "__main__":
             st.stop()
 
         file_labels = [f.stem for f in trade_files]
-        selected_idx = st.selectbox("Backtest", range(len(file_labels)), format_func=lambda i: file_labels[i])
+        selected_idx = st.selectbox(
+            "Backtest", range(len(file_labels)), format_func=lambda i: file_labels[i]
+        )
         trades_df = parse_trades_csv(trade_files[selected_idx])
 
         if trades_df.empty:
@@ -86,7 +88,9 @@ if __name__ == "__main__":
         # Trade selection (sorted by P&L, worst first)
         trades_df = trades_df.sort_values("total_pnl").reset_index(drop=True)
         labels = [trade_label(i, row) for i, row in trades_df.iterrows()]
-        trade_idx = st.selectbox("Trade", range(len(labels)), format_func=lambda i: labels[i])
+        trade_idx = st.selectbox(
+            "Trade", range(len(labels)), format_func=lambda i: labels[i]
+        )
         trade = trades_df.iloc[trade_idx]
 
         # Resolution
@@ -115,10 +119,16 @@ if __name__ == "__main__":
     fig = convert_df_to_fig(df, fconfig)
 
     entry_time = (
-        Timestamp(trade["entry_time"]).tz_convert("US/Eastern").tz_localize(None).to_pydatetime()
+        Timestamp(trade["entry_time"])
+        .tz_convert("US/Eastern")
+        .tz_localize(None)
+        .to_pydatetime()
     )
     exit_time = (
-        Timestamp(trade["exit_time"]).tz_convert("US/Eastern").tz_localize(None).to_pydatetime()
+        Timestamp(trade["exit_time"])
+        .tz_convert("US/Eastern")
+        .tz_localize(None)
+        .to_pydatetime()
     )
     fig = add_trade_markers_to_fig(fig, entry_time, exit_time)
 

@@ -231,7 +231,7 @@ if __name__ == "__main__":
     )
 
     pconfig = configure_plotly()
-    st.plotly_chart(fig, use_container_width=True, config=pconfig)
+    st.plotly_chart(fig, width='stretch', config=pconfig)
 
     # Trade details
     with st.expander("Trade Details"):

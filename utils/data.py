@@ -68,9 +68,11 @@ def convert_bars_to_df(bars: list) -> DataFrame:
 
     # Create DataFrame and set timestamp as index, converting UTC to ET
     df = DataFrame(data)
-    df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True).dt.tz_convert(
-        "US/Eastern"
-    ).dt.tz_localize(None)
+    df["timestamp"] = (
+        pd.to_datetime(df["timestamp"], utc=True)
+        .dt.tz_convert("US/Eastern")
+        .dt.tz_localize(None)
+    )
     df.set_index("timestamp", inplace=True)
     df.sort_index(inplace=True)
 

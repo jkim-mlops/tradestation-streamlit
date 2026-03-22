@@ -13,6 +13,7 @@ st.set_page_config(
 pg = st.navigation(
     [
         st.Page("./pages/chart.py", title="Chart", icon="📊"),
+        st.Page("./pages/trades.py", title="Trades", icon="📈"),
     ]
 )
 pg.run()
