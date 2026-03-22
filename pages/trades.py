@@ -83,7 +83,8 @@ if __name__ == "__main__":
             st.warning("No trades found in file")
             st.stop()
 
-        # Trade selection
+        # Trade selection (sorted by P&L, worst first)
+        trades_df = trades_df.sort_values("total_pnl").reset_index(drop=True)
         labels = [trade_label(i, row) for i, row in trades_df.iterrows()]
         trade_idx = st.selectbox("Trade", range(len(labels)), format_func=lambda i: labels[i])
         trade = trades_df.iloc[trade_idx]
